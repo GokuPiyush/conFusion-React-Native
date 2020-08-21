@@ -16,7 +16,7 @@ export default class Contact extends Component{
                         HONG KONG{'\n'}
                         Tel: +852 1234 5678{'\n'}
                         Fax: +852 8765 4321{'\n'}
-                        Email:confusion@food.net
+                        Email: confusion@food.net
                     </Text>
                 </Card>
             </View>
