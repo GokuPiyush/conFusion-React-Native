@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, StyleSheet, Switch, Button, TouchableOpacity, Picker } from 'react-native';
+import { Text, View, ScrollView, StyleSheet, Switch, Button, TouchableOpacity, Modal, Picker } from 'react-native';
 import { Icon } from 'react-native-elements'
 //import DatePicker  from 'react-native-datepicker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -14,8 +14,9 @@ class Reservation extends Component {
             guests: 1,
             smoking: false,
             date: new Date(),
-            show: false,
-            mode: ''
+            mode: '',
+            showDate: false,
+            showModal: false
         }
     }
 
@@ -29,13 +30,20 @@ class Reservation extends Component {
             smoking: this.state.smoking,
             date: this.state.date
         }));
+        this.toggleModal();
+    }
+    resetForm(){
         this.setState({
             guests: 1,
             smoking: false,
             date: new Date(),
-            show: false,
-            mode: ''
+            mode: '',
+            showDate: false,
+            showModal: false
         });
+    }
+    toggleModal() {
+        this.setState({showModal: !this.state.showModal});
     }
     
     render() {
@@ -72,25 +80,25 @@ class Reservation extends Component {
                             alignItems: "center",
                             backgroundColor: "#DDD",
                             padding: 10}}
-                        onPress={() => this.setState({show: true, mode: 'date'})}
+                        onPress={() => this.setState({showDate: true, mode: 'date'})}
                         >
                         <Text>{Moment(this.state.date).format('DD-MMM-YYYY hh:mm A')}</Text>
                     </TouchableOpacity>
-                    {this.state.show && (
+                    {this.state.showDate && (
                         <DateTimePicker
                             value={this.state.date}
                             mode={this.state.mode}
                             is24Hour={false}
                             display="default"
-                            minimumDate= {new Date()}
+                            minimumDate= {new Date(2017,1,1)}
                             onChange={(event, selectedDate) => {
                                 if(selectedDate == undefined){
                                     this.setState({
-                                        show: false
+                                        showDate: false
                                     });
                                 }else{
                                     this.setState({
-                                        show: this.state.mode == 'time'? false : true,
+                                        showDate: this.state.mode == 'time'? false : true,
                                         mode: 'time',
                                         date: selectedDate
                                     });
@@ -107,6 +115,26 @@ class Reservation extends Component {
                         accessibilityLabel="Learn more about this purple button"
                         />
                 </View>
+
+                <Modal
+                    animationType = {"slide"}
+                    transparent = {false}
+                    visible = {this.state.showModal}
+                    onDismiss = {() => this.toggleModal() }
+                    onRequestClose = {() => this.toggleModal() }>
+                    <View style = {styles.modal}>
+                        <Text style = {styles.modalTitle}>Your Reservation</Text>
+                        <Text style = {styles.modalText}>Number of Guests: {this.state.guests}</Text>
+                        <Text style = {styles.modalText}>Smoking?: {this.state.smoking ? 'Yes' : 'No'}</Text>
+                        <Text style = {styles.modalText}>Date and Time: {this.state.date.toISOString()}</Text>
+                        
+                        <Button 
+                            onPress = {() =>{this.toggleModal(); this.resetForm();}}
+                            color="#512DA8"
+                            title="Close" 
+                            />
+                    </View>
+                </Modal>
             </ScrollView>
         );
     }
@@ -127,7 +155,23 @@ const styles = StyleSheet.create({
     },
     formItem: {
         flex: 1
-    }
+    },
+    modal: {
+        justifyContent: 'center',
+        margin: 20
+     },
+     modalTitle: {
+         fontSize: 24,
+         fontWeight: 'bold',
+         backgroundColor: '#512DA8',
+         textAlign: 'center',
+         color: 'white',
+         marginBottom: 20
+     },
+     modalText: {
+         fontSize: 18,
+         margin: 10
+     }
 });
 
 
