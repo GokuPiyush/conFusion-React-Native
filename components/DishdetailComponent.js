@@ -158,13 +158,13 @@ class Dishdetail extends Component {
     };
     
     render(){
-        const dishId = this.props.navigation.getParam('dishId','');
+        const dishId = parseInt(this.props.navigation.getParam('dishId',''));
         return(
             <ScrollView>
-                <RenderDish dish={this.props.dishes.dishes[+dishId]}
+                <RenderDish dish={this.props.dishes.dishes[dishId]}
                     favorite={this.props.favorites.some(el => el === dishId)}
                     onPress={() => this.props.postFavorite(dishId)}
-                    postComment={(rating, value, comment) => this.props.postComment(dishId, rating, value, comment)}
+                    postComment={(rating, author, comment) => this.props.postComment(dishId, rating, author, comment)}
                     />
                 <RenderComments comments={this.props.comments.comments.filter((comment) => comment.dishId === dishId)} />
             </ScrollView>

@@ -8,6 +8,7 @@ import Menu from './MenuComponent';
 import Dishdetail from './DishdetailComponent';
 import Contact from './ContactComponent';
 import About from './AboutComponent';
+import Favorites from './FavoriteComponent';
 import Reservation from './ReservationComponent';
 import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreators';
 
@@ -99,6 +100,23 @@ const AboutNavigator = createStackNavigator({
     })
 });
 
+const FavoritesNavigator = createStackNavigator({
+    Favorites: { screen: Favorites }
+  }, {
+    navigationOptions: ({ navigation }) => ({
+        headerStyle: {
+            backgroundColor: "#512DA8"
+        },
+        headerTitleStyle: {
+            color: "#fff"            
+        },
+        headerTintColor: "#fff",
+        headerLeft: <Icon name="menu" size={24}
+            iconStyle={{ color: 'white' }} 
+            onPress={ () => navigation.navigate('DrawerToggle') } />    
+    })
+});
+
 const ReservationNavigator = createStackNavigator({
     Reservation: { screen: Reservation }
 }, {
@@ -114,7 +132,7 @@ const ReservationNavigator = createStackNavigator({
             iconStyle={{ color: 'white' }} 
             onPress={ () => navigation.navigate('DrawerToggle') } />    
     })
-})
+});
 
 const CustomDrawerContentComponent = (props) => (
     <ScrollView>
@@ -192,6 +210,21 @@ const MainNavigator = createDrawerNavigator({
                     />
                 ),
             }, 
+        },
+    Favorites:
+        { screen: FavoritesNavigator,
+          navigationOptions: {
+            title: 'My Favorites',
+            drawerLabel: 'My Favorites',
+            drawerIcon: ({ tintColor, focused }) => (
+              <Icon
+                name='heart'
+                type='font-awesome'            
+                size={24}
+                iconStyle={{ color: tintColor }}
+              />
+            ),
+          }
         },
     Reservation:
         { screen: ReservationNavigator,

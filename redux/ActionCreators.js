@@ -162,30 +162,7 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
         comment: comment
     };
     newComment.date = new Date().toISOString();
-    
-    return fetch(baseUrl + 'comments', {
-        method: "POST",
-        body: JSON.stringify(newComment),
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "same-origin"
-    })
-    .then(response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error('Error ' + response.status + ': ' + response.statusText);
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-            throw error;
-      })
-    .then(response => response.json())
-    .then(response => setTimeout(() => { dispatch(addComment(response)) }, 2000))
-    .catch(error =>  { console.log('post comments', error.message)});
+    setTimeout(()=>dispatch(addComment(newComment)), 2000);
 };
 
 export const addComment = (comment) => ({
