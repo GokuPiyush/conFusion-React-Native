@@ -54,6 +54,12 @@ class RenderDish extends Component {
             else
                 return false;
         }
+        const recognizeComment = ({ moveX, moveY, dx, dy }) => {
+            if ( dx > 200 )
+                return true;
+            else
+                return false;
+        }
         
         const panResponder = PanResponder.create({
             onStartShouldSetPanResponder: (e, gestureState) => {
@@ -75,6 +81,8 @@ class RenderDish extends Component {
                         ],
                         { cancelable: false }
                     );
+                } else if (recognizeComment(gestureState)) {
+                    this.toggleModal();
                 }
                 return true;
             }
