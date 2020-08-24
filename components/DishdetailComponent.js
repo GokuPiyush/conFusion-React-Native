@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, ScrollView, FlatList, Modal, StyleSheet, Button } from 'react-native';
 import { Card, Icon, Rating, Input } from 'react-native-elements';
+import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { postFavorite, postComment } from '../redux/ActionCreators';
@@ -48,31 +49,33 @@ class RenderDish extends Component {
         if (dish != null) {
             return(
                 <>
-                    <Card
-                        featuredTitle={dish.name}
-                        image={{uri: baseUrl + dish.image}}>
-                            <Text style={{margin: 10}}>
-                                {dish.description}
-                            </Text>
-                            <View style={styles.icon}>
-                                <Icon
-                                    raised
-                                    reverse
-                                    name={ this.props.favorite ? 'heart' : 'heart-o'}
-                                    type='font-awesome'
-                                    color='#f50'
-                                    onPress={() => this.props.favorite ? console.log('Already favorite') : this.props.onPress()}
-                                />
-                                <Icon
-                                    raised
-                                    reverse
-                                    name='pencil'
-                                    type='font-awesome'
-                                    color='#512DA8'
-                                    onPress={() => this.toggleModal()}
-                                />
-                            </View>
-                    </Card>
+                    <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
+                        <Card
+                            featuredTitle={dish.name}
+                            image={{uri: baseUrl + dish.image}}>
+                                <Text style={{margin: 10}}>
+                                    {dish.description}
+                                </Text>
+                                <View style={styles.icon}>
+                                    <Icon
+                                        raised
+                                        reverse
+                                        name={ this.props.favorite ? 'heart' : 'heart-o'}
+                                        type='font-awesome'
+                                        color='#f50'
+                                        onPress={() => this.props.favorite ? console.log('Already favorite') : this.props.onPress()}
+                                    />
+                                    <Icon
+                                        raised
+                                        reverse
+                                        name='pencil'
+                                        type='font-awesome'
+                                        color='#512DA8'
+                                        onPress={() => this.toggleModal()}
+                                    />
+                                </View>
+                        </Card>
+                    </Animatable.View>
                     <Modal
                         animationType = {"slide"}
                         transparent = {false}
@@ -141,13 +144,15 @@ function RenderComments(props) {
     };
     
     return (
-        <Card title='Comments' >
-            <FlatList 
-                data={comments}
-                renderItem={renderCommentItem}
-                keyExtractor={item => item.id.toString()}
-                />
-        </Card>
+        <Animatable.View animation="fadeInUp" duration={2000} delay={1000}>
+            <Card title='Comments' >
+                <FlatList 
+                    data={comments}
+                    renderItem={renderCommentItem}
+                    keyExtractor={item => item.id.toString()}
+                    />
+            </Card>
+        </Animatable.View>
     );
 }
 
