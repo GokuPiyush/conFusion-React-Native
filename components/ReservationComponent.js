@@ -6,6 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Moment from 'moment';
 import * as Animatable from 'react-native-animatable';
 import * as Permissions from 'expo-permissions';
+import * as Calendar from 'expo-calendar';
 import { Notifications } from 'expo';
 
 class Reservation extends Component {
@@ -62,7 +63,42 @@ class Reservation extends Component {
             }
         });
     }
-
+    
+    async obtainCalendarPermission() {
+        let permission = await Permissions.getAsync(Permissions.CALENDAR);
+        if (permission.status !== 'granted') {
+            permission = await Permissions.askAsync(Permissions.CALENDAR);
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission not granted to show notifications');
+            }
+        }
+        return permission;
+    }
+    async obtainDefaultCalendarId() {
+        let calendar = null;
+        
+        if (Platform.OS === 'ios') {
+            calendar = await Calendar.getDefaultCalendarAsync();
+        } else {
+            const calendars = await Calendar.getCalendarsAsync();
+            calendar = calendars.filter(calendar => calendar.accessLevel == 'owner')[0];
+        }
+        return calendar.id;
+    }
+    async addReservationToCalendar(date) {
+        await this.obtainCalendarPermission();
+        
+        const event = Calendar.createEventAsync(await this.obtainDefaultCalendarId(), {
+            title: 'Con Fusion Table Reservation',
+            startDate: date,
+            endDate: new Date(Date.parse(date.toISOString()) + 2*60*60*1000),
+            timeZone: 'Asia/Hong_Kong',
+            location: '121, Clear Water Bay Road, Clear Water Bay, Kowloon, Hong Kong'
+        })
+        .then(event => console.log('Event successfullly added to calendar: ' + event))
+        .catch(err => console.log('Error: ' + err));
+    }
+    
     handleReservation() {
         console.log(JSON.stringify(this.state));
         this.resetForm();
@@ -148,6 +184,7 @@ class Reservation extends Component {
                                     { text: 'Cancel', onPress: () => this.resetForm(), style: 'cancel' },
                                     { text: 'OK', onPress: () => {
                                             this.presentLocalNotification(this.state.date);
+                                            this.addReservationToCalendar(this.state.date);
                                             this.handleReservation();
                                         }
                                     }
